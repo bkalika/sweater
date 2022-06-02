@@ -194,3 +194,4 @@ local.properties
 .mvn/
 mvnw
 mvnw.*
+uploads/*
