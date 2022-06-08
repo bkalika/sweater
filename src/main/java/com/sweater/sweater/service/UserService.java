@@ -1,13 +1,16 @@
 package com.sweater.sweater.service;
 
+import com.sweater.sweater.config.BeanConfig;
 import com.sweater.sweater.domain.Role;
 import com.sweater.sweater.domain.User;
 import com.sweater.sweater.repos.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,14 +25,22 @@ public class UserService implements UserDetailsService {
     private final UserRepo userRepo;
 
     private final MailSenderService mailSenderService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepo userRepo, MailSenderService mailSenderService) {
+    public UserService(UserRepo userRepo, MailSenderService mailSenderService, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.mailSenderService = mailSenderService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepo.findByName(username);
+
+        if(user == null) {
+            throw new UsernameNotFoundException("User not found!");
+        }
+
         return userRepo.findByName(username);
     }
 
@@ -42,6 +53,7 @@ public class UserService implements UserDetailsService {
         user.setActive(false);
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepo.save(user);
 
         sendMessage(user);
@@ -91,13 +103,13 @@ public class UserService implements UserDetailsService {
         if(isEmailChanged) {
             user.setEmail(email);
 
-            if(StringUtils.isEmpty(email)) {
+            if(ObjectUtils.isEmpty(email)) {
                 user.setActivationCode(UUID.randomUUID().toString());
             }
         }
 
-        if (StringUtils.isEmpty(password)) {
-            user.setPassword(password);
+        if (!ObjectUtils.isEmpty(password)) {
+            user.setPassword(passwordEncoder.encode(password));
         }
 
         userRepo.save(user);
@@ -109,7 +121,7 @@ public class UserService implements UserDetailsService {
     }
 
     private void sendMessage(User user) {
-        if(!StringUtils.isEmpty(user.getEmail())) {
+        if(!ObjectUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
                             "Welcome to Sweater. Please, visit a next link: http://localhost:8080/activate/%s",

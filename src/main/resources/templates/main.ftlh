@@ -16,17 +16,28 @@
     <div class="mt-3">
         <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
            aria-controls="collapseExample">
-            Post new message
+            Add new message
         </a>
     </div>
-    <div class="collapse" id="collapseExample" style="width: 30rem;">
+    <div class="collapse <#if message??>show</#if>" id="collapseExample" style="width: 30rem;">
         <div class="form-group mt-3">
             <form method="post" enctype="multipart/form-data">
                 <div class="form-group m-2">
-                    <input type="text" name="text" class="form-control" placeholder="Input a message"/>
+                    <input type="text" class="form-control ${(textError??)?string('is-invalid', '')}"
+                               value="<#if message??>${message.text}</#if>" name="text" placeholder="Input a message"/>
+                    <#if textError??>
+                        <div class="invalid-feedback">
+                            ${textError}
+                        </div>
+                    </#if>
                 </div>
                 <div class="form-group m-2">
-                    <input type="text" name="tag" class="form-control" placeholder="Tag">
+                        <input type="text" value="<#if message??>${message.tag}</#if>" name="tag" class="form-control ${(tagError??)?string('is-invalid', '')}" placeholder="Tag">
+                    <#if tagError??>
+                        <div class="invalid-feedback">
+                            ${tagError}
+                        </div>
+                    </#if>
                 </div>
                 <div class="form-group">
                     <div class="input-group m-2">

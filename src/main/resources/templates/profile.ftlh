@@ -2,18 +2,22 @@
 
 <@c.page>
     <h5>${name}</h5>
-    ${message?if_exists}
+    ${message!}
     <form method="post">
             <div class="mb-1">
                 <label class="form-label">Email:</label>
                 <div>
-                    <input type="email" class="form-control" name="email" placeholder="mail@mail.com"/>
+                    <label>
+                        <input type="email" class="form-control" name="email" placeholder="mail@mail.com"/>
+                    </label>
                 </div>
             </div>
         <div class="mb-1">
             <label class="form-label">Password:</label>
             <div>
-                <input type="password" class="form-control" name="password" placeholder="Password" value="${email!''}"/>
+                <label>
+                    <input type="password" class="form-control" name="password" placeholder="Password" value="${email!''}"/>
+                </label>
             </div>
         </div>
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
