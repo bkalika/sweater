@@ -1,10 +1,9 @@
 package com.sweater.sweater.service;
 
-import com.sweater.sweater.config.BeanConfig;
 import com.sweater.sweater.domain.Role;
 import com.sweater.sweater.domain.User;
 import com.sweater.sweater.repos.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +25,9 @@ public class UserService implements UserDetailsService {
 
     private final MailSenderService mailSenderService;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${hostname}")
+    private String hostname;
 
     public UserService(UserRepo userRepo, MailSenderService mailSenderService, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
@@ -124,12 +126,24 @@ public class UserService implements UserDetailsService {
         if(!ObjectUtils.isEmpty(user.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Welcome to Sweater. Please, visit a next link: http://localhost:8080/activate/%s",
+                            "Welcome to Sweater. Please, visit a next link: http://%s/activate/%s",
                     user.getUsername(),
+                    hostname,
                     user.getActivationCode()
             );
             mailSenderService.send(user.getEmail(), "Activation code", message);
         }
     }
 
+    public void subscribe(User currentUser, User user) {
+        user.getSubscribers().add(currentUser);
+
+        userRepo.save(user);
+    }
+
+    public void unsubscribe(User currentUser, User user) {
+        user.getSubscribers().remove(currentUser);
+
+        userRepo.save(user);
+    }
 }

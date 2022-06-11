@@ -194,4 +194,8 @@ local.properties
 .mvn/
 mvnw
 mvnw.*
+
+# exclude everything
 uploads/*
+# exception to the rule
+!uploads/.gitkeep
