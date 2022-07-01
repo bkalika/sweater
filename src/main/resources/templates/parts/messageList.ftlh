@@ -1,13 +1,13 @@
 <#include "security.ftlh">
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
+<div class="row row-cols-1 row-cols-md-3 g-4" id="message-list">
     <#list messages as message>
         <div class="col">
-            <div class="card my-3">
+            <div class="card my-3" data-id="${message.id}">
                 <#--            <b>${message.id}</b>-->
                 <div>
                     <#if message.filename??>
-                        <img class="card-img-top" src="/img/${message.filename}" alt="File">
+                        <img class="card-img-top" src="/img/${message.filename}" alt="File" />
                     </#if>
                 </div>
                 <div class="m-2">

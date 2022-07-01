@@ -3,6 +3,7 @@ package com.sweater.sweater.controller;
 import com.sweater.sweater.domain.Message;
 import com.sweater.sweater.domain.User;
 import com.sweater.sweater.repos.MessageRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +30,7 @@ import java.util.UUID;
  * Created on 11.05.2022 10:47 AM
  */
 @Controller
+@Slf4j
 public class MainController {
     private final MessageRepo messageRepo;
 
@@ -46,7 +48,8 @@ public class MainController {
     }
 
     @GetMapping("/main")
-    public String main(@RequestParam(required = false, defaultValue = "") String filter,
+    public String main(
+            @RequestParam(required = false) String filter,
                        Model model) {
         Iterable<Message> messages;
 
@@ -58,6 +61,8 @@ public class MainController {
 
         model.addAttribute("messages", messages);
         model.addAttribute("filter", filter);
+
+        messages.forEach(msg -> log.debug("Have some message: {}", msg.toString()));
         return "main";
     }
 
