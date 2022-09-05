@@ -1,6 +1,5 @@
 package com.sweater.sweater;
 
-import com.sweater.sweater.controller.MainController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"messages-list-after.sql", "create-user-after.sql"},
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class MainControllerTest {
+public class MessageControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

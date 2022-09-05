@@ -3,6 +3,7 @@ package com.sweater.sweater.controller;
 import com.sweater.sweater.domain.User;
 import com.sweater.sweater.domain.dto.CaptchaResponseDto;
 import com.sweater.sweater.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,7 @@ public class RegistrationController {
 
     private final UserService userService;
 
+    @Autowired
     private final RestTemplate restTemplate;
 
     public RegistrationController(UserService userService, RestTemplate restTemplate) {
